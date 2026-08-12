@@ -119,8 +119,8 @@
       color: #ff0000;
       font-family: 'Courier New', Courier, monospace;
       font-weight: bold;
-      font-size: 2.5rem;
-      line-height: 1.5;
+      font-size: 2.2rem;
+      line-height: 1.6;
       text-transform: uppercase;
       text-shadow: 0 0 10px #ff0000, 0 0 20px #8b0000;
       animation: textShake 0.03s infinite alternate;
@@ -132,7 +132,7 @@
     }
   </style>
 </head>
-<body>
+<body onclick="startBgAudio()" onkeydown="startBgAudio()">
 
   <!-- Блок с куклой -->
   <div class="doll-container">
@@ -181,9 +181,8 @@
   <!-- Экран текстового скримера -->
   <div id="screamer">
     <div class="screamer-text">
-      СМЕРТЬ.<br>
-      ТЫ УМРЕШЬ.<br>
-      ТЕБЕ КОНЕЦ.
+      Я ТЕБЯ ВИЖУ.<br>
+      ОБЯЗАТЕЛЬНО ПРИДУ ЗА ТОБОЙ.
     </div>
   </div>
 
@@ -191,7 +190,22 @@
     const CORRECT_CODE = "7731";
     let attempts = 5;
 
+    // Фоновый звук (спокойный хоррор-эмбиенс)
+    const bgAudio = new Audio('https://myinstants.com/media/sounds/scary-ambience.mp3');
+    bgAudio.loop = true;
+    bgAudio.volume = 0.4; // Негромкий фон
+    let isBgPlaying = false;
+
+    function startBgAudio() {
+      if (!isBgPlaying) {
+        bgAudio.play().then(() => {
+          isBgPlaying = true;
+        }).catch(() => {});
+      }
+    }
+
     function checkCode() {
+      startBgAudio();
       const input = document.getElementById('cipher-input').value.trim();
       const log = document.getElementById('log');
 
@@ -211,6 +225,9 @@
     }
 
     function triggerScreamer() {
+      // Останавливаем фоновый эмбиенс при срабатывании скримера
+      bgAudio.pause();
+
       const audio = new Audio('https://myinstants.com/media/sounds/screamer.mp3');
       audio.volume = 1.0;
       audio.play().catch(() => {});
