@@ -33,11 +33,10 @@
         radial-gradient(circle at 20% 20%, rgba(0, 255, 102, 0.03), transparent 50%);
     }
 
-    /* Контейнер куклы */
     .doll-container {
       width: 100%;
       max-width: 600px;
-      height: 200px;
+      height: 180px;
       background: #000;
       border: 1px solid var(--border-color);
       display: flex;
@@ -50,8 +49,8 @@
     }
 
     .creepy-doll {
-      width: 140px;
-      height: 180px;
+      width: 130px;
+      height: 160px;
       animation: dollMove 6s ease-in-out infinite alternate;
       filter: drop-shadow(0 0 10px rgba(139, 0, 0, 0.5));
     }
@@ -62,7 +61,6 @@
       100% { transform: translateY(5px) rotate(-2deg) scale(1); }
     }
 
-    /* Главный контейнер */
     .container {
       max-width: 600px;
       width: 100%;
@@ -104,12 +102,11 @@
       letter-spacing: 1px;
     }
 
-    /* Карточка загадки */
     .puzzle-card {
       background: rgba(0, 0, 0, 0.6);
       border: 1px solid var(--border-color);
       padding: 20px;
-      display: none; /* Скрыты по умолчанию */
+      display: none;
       animation: fadeIn 0.5s ease;
     }
 
@@ -143,82 +140,16 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      line-height: 1.6;
     }
 
-    /* Загадка 1: Алфавит */
-    .alphabet {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      justify-content: center;
-      font-size: 13px;
-    }
-    .alphabet span { padding: 2px 4px; color: var(--text-dim); }
-    .alphabet span.highlight {
-      background: var(--accent-red);
-      color: #fff;
-      font-weight: bold;
-      border-radius: 2px;
-      box-shadow: 0 0 5px var(--accent-red);
-    }
-
-    /* Загадка 2: Шифр костей */
-    .symbol-code {
-      font-size: 22px;
-      letter-spacing: 4px;
+    .acrostic {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
       color: var(--accent-gold);
-      margin-bottom: 8px;
-    }
-    .decoder-key {
-      font-size: 11px;
-      color: var(--text-dim);
-      border-top: 1px dotted var(--border-color);
-      padding-top: 6px;
-      width: 100%;
-    }
-
-    /* Загадка 3: Филлворд */
-    .fillword {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 5px;
+      text-align: left;
       font-size: 15px;
-      font-weight: bold;
     }
-    .fillword span.mark {
-      color: #ff4d4d;
-      background: rgba(139, 0, 0, 0.3);
-      border: 1px solid var(--accent-red);
-    }
-
-    /* Загадка 4: Циферблат */
-    .clock-face {
-      width: 80px;
-      height: 80px;
-      border: 2px solid var(--accent-gold);
-      border-radius: 50%;
-      position: relative;
-      margin: 0 auto;
-    }
-    .clock-hand {
-      position: absolute;
-      width: 2px;
-      height: 30px;
-      background: var(--accent-red);
-      top: 10px;
-      left: 39px;
-      transform-origin: bottom center;
-      transform: rotate(30deg);
-      box-shadow: 0 0 4px var(--accent-red);
-    }
-    .clock-num {
-      position: absolute;
-      font-size: 10px;
-      color: var(--text-dim);
-    }
-    .num-12 { top: 2px; left: 34px; }
-    .num-1  { top: 6px; right: 18px; color: var(--accent-red); font-weight: bold; }
-    .num-6  { bottom: 2px; left: 34px; }
 
     .hint {
       font-size: 12px;
@@ -227,7 +158,6 @@
       margin-bottom: 15px;
     }
 
-    /* Формы ввода */
     .input-row {
       display: flex;
       gap: 10px;
@@ -266,7 +196,6 @@
       box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
     }
 
-    /* Терминал в финале */
     .terminal-box {
       display: none;
       background: #000;
@@ -323,7 +252,6 @@
     }
     .error-text { color: #ff4d4d; }
 
-    /* Скример */
     #screamer {
       display: none;
       position: fixed;
@@ -357,7 +285,6 @@
 </head>
 <body onclick="startBgAudio()" onkeydown="startBgAudio()">
 
-  <!-- Кукла -->
   <div class="doll-container">
     <svg class="creepy-doll" viewBox="0 0 100 140">
       <path d="M 30,60 L 15,110 L 35,110 L 40,85 L 50,85 L 55,110 L 75,110 L 60,60 Z" fill="#4a4035" stroke="#1f1a14" stroke-width="2"/>
@@ -386,81 +313,78 @@
       <div class="attempts-bar" id="attempts-display">Осталось попыток: 2</div>
     </header>
 
-    <!-- Загадка 1 -->
+    <!-- Загадка 1: Гримуар Нумерологии -->
     <div class="puzzle-card active" id="p1">
-      <div class="puzzle-title"><span>I. Алфавит</span><span>[Ключ 1]</span></div>
+      <div class="puzzle-title"><span>I. Гримуар Алхимии</span><span>[Ключ 1]</span></div>
       <div class="puzzle-body">
-        <div class="alphabet">
-          <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
-          <span class="highlight">G</span>
-          <span>H</span><span>I</span><span>J</span><span>K</span><span>L</span><span>M</span>
-          <span>N</span><span>O</span><span>P</span><span>Q</span><span>R</span><span>S</span>
-          <span>T</span><span>U</span><span>V</span><span>W</span><span>X</span><span>Y</span><span>Z</span>
+        <div style="font-size: 20px; font-weight: bold; letter-spacing: 3px; color: var(--accent-gold);">
+          «КРОВЬ»
         </div>
       </div>
-      <div class="hint">Какая по счёту буква окроплена кровью?</div>
+      <div class="hint">
+        Найдите сумму порядковых номеров букв слова в алфавите (А=1, Б=2... Ь=30). Складывайте цифры получившегося числа до одной конечной цифры.
+      </div>
       <div class="input-row">
         <input type="text" id="ans1" placeholder="Ваш ответ..." autocomplete="off">
         <button onclick="checkStep(1, '7', 'ans1')">ОТВЕТИТЬ</button>
       </div>
     </div>
 
-    <!-- Загадка 2 -->
+    <!-- Загадка 2: Ритуал Колоколов -->
     <div class="puzzle-card" id="p2">
-      <div class="puzzle-title"><span>II. Шифр Костей</span><span>[Ключ 2]</span></div>
+      <div class="puzzle-title"><span>II. Ритуал Колоколов</span><span>[Ключ 2]</span></div>
       <div class="puzzle-body">
-        <div class="symbol-code">═ ═ • • •</div>
-        <div class="decoder-key">
-          Шкала: [═ = 2] [• = 1]<br>Сложи значение всех символов вместе
+        <div style="color: var(--accent-gold); font-size: 14px;">
+          1-й колокол: 01:00<br>
+          2-й колокол: 03:00<br>
+          3-й колокол: 05:00<br>
+          <span style="color: var(--accent-red);">4-й колокол: ??:00</span>
         </div>
       </div>
-      <div class="hint">Сосчитай сумму: две длинных кости и три укола...</div>
+      <div class="hint">В какой час пробьёт четвертый колокол, разбудив тварь?</div>
       <div class="input-row">
         <input type="text" id="ans2" placeholder="Ваш ответ..." autocomplete="off">
         <button onclick="checkStep(2, '7', 'ans2')">ОТВЕТИТЬ</button>
       </div>
     </div>
 
-    <!-- Загадка 3 -->
+    <!-- Загадка 3: Акростих Стеганографии -->
     <div class="puzzle-card" id="p3">
-      <div class="puzzle-title"><span>III. Филлворд</span><span>[Ключ 3]</span></div>
+      <div class="puzzle-title"><span>III. Заклятие Тьмы</span><span>[Ключ 3]</span></div>
       <div class="puzzle-body">
-        <div class="fillword">
-          <span>D</span><span>E</span><span>A</span><span>T</span><span>H</span>
-          <span class="mark">T</span><span class="mark">H</span><span class="mark">R</span><span class="mark">E</span><span class="mark">E</span>
-          <span>P</span><span>A</span><span>I</span><span>N</span><span>S</span>
+        <div class="acrostic">
+          <strong>Т</strong>ьма накрывает древний замок,<br>
+          <strong>Р</strong>вётся наружу жуткий крик,<br>
+          <strong>И</strong>счезнет свет в один лишь миг...
         </div>
       </div>
-      <div class="hint">Переведи выделенное слово на русский язык (числом).</div>
+      <div class="hint">Взгляните на первые буквы строк. Напишите число, которое они образуют.</div>
       <div class="input-row">
         <input type="text" id="ans3" placeholder="Ваш ответ..." autocomplete="off">
         <button onclick="checkStep(3, '3', 'ans3')">ОТВЕТИТЬ</button>
       </div>
     </div>
 
-    <!-- Загадка 4 -->
+    <!-- Загадка 4: Дамп Памяти -->
     <div class="puzzle-card" id="p4">
-      <div class="puzzle-title"><span>IV. Циферблат</span><span>[Ключ 4]</span></div>
+      <div class="puzzle-title"><span>IV. Дамп Памяти</span><span>[Ключ 4]</span></div>
       <div class="puzzle-body">
-        <div class="clock-face">
-          <span class="clock-num num-12">XII</span>
-          <span class="clock-num num-1">I</span>
-          <span class="clock-num num-6">VI</span>
-          <div class="clock-hand"></div>
+        <div style="font-size: 18px; letter-spacing: 2px; color: var(--accent-gold); font-family: monospace;">
+          00000001 (BIN) = ? (DEC)
         </div>
       </div>
-      <div class="hint">На какую цифру указывает кровавая стрелка?</div>
+      <div class="hint">Переведите двоичный байт в десятичное число.</div>
       <div class="input-row">
         <input type="text" id="ans4" placeholder="Ваш ответ..." autocomplete="off">
         <button onclick="checkStep(4, '1', 'ans4')">ОТВЕТИТЬ</button>
       </div>
     </div>
 
-    <!-- Терминал (Финал) -->
+    <!-- Терминал -->
     <div class="terminal-box" id="terminal">
       <div class="log" id="term-log">
         > Все ключи собраны.<br>
-        > Введите полученную 4-значную sequence в терминал...
+        > Введите полученную 4-значную последовательность в терминал...
       </div>
       <div class="code-inputs">
         <input type="text" class="code-input" maxlength="1" id="c1">
@@ -481,7 +405,6 @@
     <div id="step-msg"></div>
   </div>
 
-  <!-- Скример -->
   <div id="screamer">
     <div class="screamer-text">
       Я ТЕБЯ ВИЖУ.<br>
@@ -490,9 +413,8 @@
   </div>
 
   <script>
-    let attempts = 2; // Ровно 2 попытки
+    let attempts = 2;
 
-    // Аудио
     const bgAudio = new Audio('https://myinstants.com/media/sounds/scary-ambience.mp3');
     bgAudio.loop = true;
     bgAudio.volume = 0.4;
@@ -504,15 +426,18 @@
       }
     }
 
-    // Проверка пошаговых загадок
     function checkStep(stepNum, correctValue, inputId) {
       startBgAudio();
       const val = document.getElementById(inputId).value.trim().toLowerCase();
       const msg = document.getElementById('step-msg');
 
-      // Допускаем ввод текстом для 3 загадки (три / 3)
       let isCorrect = (val === correctValue);
+      
+      // Допускаем варианты написания текстом и цифрами
+      if (stepNum === 1 && (val === 'семь' || val === '7')) isCorrect = true;
+      if (stepNum === 2 && (val === 'семь' || val === '7' || val === '07' || val === '07:00')) isCorrect = true;
       if (stepNum === 3 && (val === 'три' || val === '3')) isCorrect = true;
+      if (stepNum === 4 && (val === 'один' || val === '1')) isCorrect = true;
 
       if (isCorrect) {
         msg.textContent = '';
@@ -521,7 +446,6 @@
         if (stepNum < 4) {
           document.getElementById(`p${stepNum + 1}`).classList.add('active');
         } else {
-          // Все загадки решены -> открываем Терминал
           document.getElementById('terminal').style.display = 'block';
           document.getElementById('c1').focus();
         }
@@ -530,7 +454,6 @@
       }
     }
 
-    // Автопереход между ячейками итогового кода
     const inputs = document.querySelectorAll('.code-input');
     inputs.forEach((input, index) => {
       input.addEventListener('input', (e) => {
@@ -545,7 +468,6 @@
       });
     });
 
-    // Финальная проверка кода 7731
     function checkFinalCode() {
       startBgAudio();
       const code = Array.from(inputs).map(i => i.value).join('');
@@ -557,7 +479,6 @@
       }
     }
 
-    // Обработка ошибки и снятие жизней
     function handleError() {
       attempts--;
       const attemptsDisplay = document.getElementById('attempts-display');
@@ -573,7 +494,6 @@
       }
     }
 
-    // Скример при 0 попыток
     function triggerScreamer() {
       bgAudio.pause();
 
