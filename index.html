@@ -3,41 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terminal Access</title>
+  <title>Terminal & Executioner's Cipher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #050505;
+      --card-bg: #0d0a09;
+      --border-color: #3d2b24;
+      --accent-red: #8b0000;
+      --accent-gold: #c9a063;
+      --term-green: #00ff66;
+      --text-color: #d1c2b5;
+      --text-dim: #7a685c;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background-color: #050505;
-      color: #00ff66;
-      font-family: 'Courier New', Courier, monospace;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Playfair Display', serif;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
       padding: 20px;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(139, 0, 0, 0.15), transparent 70%),
+        radial-gradient(circle at 20% 20%, rgba(0, 255, 102, 0.03), transparent 50%);
     }
 
-    /* Контейнер для куклы */
+    /* Контейнер куклы */
     .doll-container {
       width: 100%;
-      max-width: 450px;
-      height: 280px;
+      max-width: 600px;
+      height: 200px;
       background: #000;
-      border: 1px solid #222;
+      border: 1px solid var(--border-color);
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       position: relative;
+      box-shadow: 0 0 20px rgba(0,0,0,0.9);
     }
 
-    /* Анимация куклы */
     .creepy-doll {
-      width: 180px;
-      height: 240px;
+      width: 140px;
+      height: 180px;
       animation: dollMove 6s ease-in-out infinite alternate;
-      filter: drop-shadow(0 0 10px rgba(0,0,0,0.9));
+      filter: drop-shadow(0 0 10px rgba(139, 0, 0, 0.5));
     }
 
     @keyframes dollMove {
@@ -46,61 +62,268 @@
       100% { transform: translateY(5px) rotate(-2deg) scale(1); }
     }
 
-    /* Терминал */
-    .terminal-box {
-      width: 100%;
+    /* Главный контейнер */
+    .container {
       max-width: 600px;
-      background: #0a0a0a;
-      border: 1px solid #333;
+      width: 100%;
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), inset 0 0 15px rgba(0,0,0,0.8);
+      padding: 25px;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 15px;
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      color: var(--accent-gold);
+      font-size: 22px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    .attempts-bar {
+      color: #ff4444;
+      font-family: monospace;
+      font-size: 12px;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Карточка загадки */
+    .puzzle-card {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      display: none; /* Скрыты по умолчанию */
+      animation: fadeIn 0.5s ease;
+    }
+
+    .puzzle-card.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .puzzle-title {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      color: var(--accent-gold);
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .puzzle-body {
+      background: #000;
+      border: 1px dashed var(--border-color);
       padding: 15px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.8);
+      font-family: monospace;
+      text-align: center;
+      margin-bottom: 15px;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Загадка 1: Алфавит */
+    .alphabet {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: center;
+      font-size: 13px;
+    }
+    .alphabet span { padding: 2px 4px; color: var(--text-dim); }
+    .alphabet span.highlight {
+      background: var(--accent-red);
+      color: #fff;
+      font-weight: bold;
+      border-radius: 2px;
+      box-shadow: 0 0 5px var(--accent-red);
+    }
+
+    /* Загадка 2: Шифр костей */
+    .symbol-code {
+      font-size: 22px;
+      letter-spacing: 4px;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+    .decoder-key {
+      font-size: 11px;
+      color: var(--text-dim);
+      border-top: 1px dotted var(--border-color);
+      padding-top: 6px;
+      width: 100%;
+    }
+
+    /* Загадка 3: Филлворд */
+    .fillword {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .fillword span.mark {
+      color: #ff4d4d;
+      background: rgba(139, 0, 0, 0.3);
+      border: 1px solid var(--accent-red);
+    }
+
+    /* Загадка 4: Циферблат */
+    .clock-face {
+      width: 80px;
+      height: 80px;
+      border: 2px solid var(--accent-gold);
+      border-radius: 50%;
+      position: relative;
+      margin: 0 auto;
+    }
+    .clock-hand {
+      position: absolute;
+      width: 2px;
+      height: 30px;
+      background: var(--accent-red);
+      top: 10px;
+      left: 39px;
+      transform-origin: bottom center;
+      transform: rotate(30deg);
+      box-shadow: 0 0 4px var(--accent-red);
+    }
+    .clock-num {
+      position: absolute;
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+    .num-12 { top: 2px; left: 34px; }
+    .num-1  { top: 6px; right: 18px; color: var(--accent-red); font-weight: bold; }
+    .num-6  { bottom: 2px; left: 34px; }
+
+    .hint {
+      font-size: 12px;
+      color: var(--text-dim);
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+
+    /* Формы ввода */
+    .input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background: #000;
+      border: 1px solid var(--border-color);
+      color: var(--accent-gold);
+      padding: 10px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
+      outline: none;
+      text-transform: uppercase;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent-gold);
+    }
+
+    button {
+      background: var(--accent-red);
+      color: #fff;
+      border: 1px solid #ff4d4d;
+      font-family: 'Cinzel', serif;
+      padding: 10px 20px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #b30000;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+    }
+
+    /* Терминал в финале */
+    .terminal-box {
+      display: none;
+      background: #000;
+      border: 1px solid var(--border-color);
+      padding: 15px;
+      font-family: 'Courier New', Courier, monospace;
+      animation: fadeIn 0.5s ease;
     }
 
     .log {
       color: #ff3333;
       font-size: 0.85rem;
       line-height: 1.4;
-      margin-bottom: 10px;
-      min-height: 80px;
+      margin-bottom: 15px;
+      min-height: 60px;
     }
 
-    .input-row {
+    .code-inputs {
       display: flex;
+      justify-content: center;
       gap: 10px;
       margin-bottom: 15px;
     }
 
-    input[type="text"] {
-      flex: 1;
-      background: #000;
-      border: 1px solid #444;
-      color: #fff;
-      padding: 8px 12px;
-      font-family: inherit;
+    .code-input {
+      width: 40px;
+      height: 50px;
+      background: #0d0a09;
+      border: 1px solid var(--border-color);
+      color: var(--term-green);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 22px;
+      text-align: center;
+      outline: none;
     }
 
-    button {
-      background: #222;
-      color: #fff;
-      border: 1px solid #555;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    button:hover { background: #333; }
-
-    /* Блок доступа */
     .access-granted {
       display: none;
-      border: 1px solid #ff2222;
-      background: rgba(20, 0, 0, 0.6);
-      color: #ff4444;
+      border: 1px solid var(--term-green);
+      background: rgba(0, 20, 0, 0.6);
+      color: var(--term-green);
       padding: 15px;
-      margin-top: 10px;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
-    /* ТЕКСТОВЫЙ СКРИМЕР */
+    #step-msg {
+      margin-top: 10px;
+      font-size: 13px;
+      font-family: monospace;
+      min-height: 18px;
+      text-align: center;
+    }
+    .error-text { color: #ff4d4d; }
+
+    /* Скример */
     #screamer {
       display: none;
       position: fixed;
@@ -134,7 +357,7 @@
 </head>
 <body onclick="startBgAudio()" onkeydown="startBgAudio()">
 
-  <!-- Блок с куклой -->
+  <!-- Кукла -->
   <div class="doll-container">
     <svg class="creepy-doll" viewBox="0 0 100 140">
       <path d="M 30,60 L 15,110 L 35,110 L 40,85 L 50,85 L 55,110 L 75,110 L 60,60 Z" fill="#4a4035" stroke="#1f1a14" stroke-width="2"/>
@@ -156,29 +379,109 @@
     </svg>
   </div>
 
-  <!-- Терминал -->
-  <div class="terminal-box">
-    <div id="log" class="log">
-      > Подключение к узлу прошло успешно...<br>
-      > Обнаружен 1 активный объект.<br>
-      > Введите последовательность шифра...
+  <div class="container">
+    <header>
+      <h1>Шифр Палача</h1>
+      <div class="subtitle">Найди 4 цифры кода. Ошибка приведет к протоколу очистки.</div>
+      <div class="attempts-bar" id="attempts-display">Осталось попыток: 2</div>
+    </header>
+
+    <!-- Загадка 1 -->
+    <div class="puzzle-card active" id="p1">
+      <div class="puzzle-title"><span>I. Алфавит</span><span>[Ключ 1]</span></div>
+      <div class="puzzle-body">
+        <div class="alphabet">
+          <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span>
+          <span class="highlight">G</span>
+          <span>H</span><span>I</span><span>J</span><span>K</span><span>L</span><span>M</span>
+          <span>N</span><span>O</span><span>P</span><span>Q</span><span>R</span><span>S</span>
+          <span>T</span><span>U</span><span>V</span><span>W</span><span>X</span><span>Y</span><span>Z</span>
+        </div>
+      </div>
+      <div class="hint">Какая по счёту буква окроплена кровью?</div>
+      <div class="input-row">
+        <input type="text" id="ans1" placeholder="Ваш ответ..." autocomplete="off">
+        <button onclick="checkStep(1, '7', 'ans1')">ОТВЕТИТЬ</button>
+      </div>
     </div>
 
-    <div class="input-row">
-      <input type="text" id="cipher-input" placeholder="ВВЕДИТЕ ШИФР..." />
-      <button onclick="checkCode()">ВВОД</button>
+    <!-- Загадка 2 -->
+    <div class="puzzle-card" id="p2">
+      <div class="puzzle-title"><span>II. Шифр Костей</span><span>[Ключ 2]</span></div>
+      <div class="puzzle-body">
+        <div class="symbol-code">═ ═ • • •</div>
+        <div class="decoder-key">
+          Шкала: [═ = 2] [• = 1]<br>Сложи значение всех символов вместе
+        </div>
+      </div>
+      <div class="hint">Сосчитай сумму: две длинных кости и три укола...</div>
+      <div class="input-row">
+        <input type="text" id="ans2" placeholder="Ваш ответ..." autocomplete="off">
+        <button onclick="checkStep(2, '7', 'ans2')">ОТВЕТИТЬ</button>
+      </div>
     </div>
 
-    <!-- Успешный ввод -->
-    <div id="access-granted" class="access-granted">
-      <p><strong>[ДОСТУП РАЗРЕШЕН]</strong></p><br>
-      <p>Оно смогло разглядеть ваше лицо сквозь экран. Теперь оно знает, где вы находитесь.</p><br>
-      <p><strong>Адрес встречи:</strong> 14 Bleeding Heart Yard, Hatton Garden, London EC1N 8SJ (Подвал старого ателье).</p>
-      <p><strong>Заметка Мастера:</strong> «Если придете после полуночи — не смотрите ему прямо в глаза. Оно не любит, когда за ним наблюдают».</p>
+    <!-- Загадка 3 -->
+    <div class="puzzle-card" id="p3">
+      <div class="puzzle-title"><span>III. Филлворд</span><span>[Ключ 3]</span></div>
+      <div class="puzzle-body">
+        <div class="fillword">
+          <span>D</span><span>E</span><span>A</span><span>T</span><span>H</span>
+          <span class="mark">T</span><span class="mark">H</span><span class="mark">R</span><span class="mark">E</span><span class="mark">E</span>
+          <span>P</span><span>A</span><span>I</span><span>N</span><span>S</span>
+        </div>
+      </div>
+      <div class="hint">Переведи выделенное слово на русский язык (числом).</div>
+      <div class="input-row">
+        <input type="text" id="ans3" placeholder="Ваш ответ..." autocomplete="off">
+        <button onclick="checkStep(3, '3', 'ans3')">ОТВЕТИТЬ</button>
+      </div>
     </div>
+
+    <!-- Загадка 4 -->
+    <div class="puzzle-card" id="p4">
+      <div class="puzzle-title"><span>IV. Циферблат</span><span>[Ключ 4]</span></div>
+      <div class="puzzle-body">
+        <div class="clock-face">
+          <span class="clock-num num-12">XII</span>
+          <span class="clock-num num-1">I</span>
+          <span class="clock-num num-6">VI</span>
+          <div class="clock-hand"></div>
+        </div>
+      </div>
+      <div class="hint">На какую цифру указывает кровавая стрелка?</div>
+      <div class="input-row">
+        <input type="text" id="ans4" placeholder="Ваш ответ..." autocomplete="off">
+        <button onclick="checkStep(4, '1', 'ans4')">ОТВЕТИТЬ</button>
+      </div>
+    </div>
+
+    <!-- Терминал (Финал) -->
+    <div class="terminal-box" id="terminal">
+      <div class="log" id="term-log">
+        > Все ключи собраны.<br>
+        > Введите полученную 4-значную sequence в терминал...
+      </div>
+      <div class="code-inputs">
+        <input type="text" class="code-input" maxlength="1" id="c1">
+        <input type="text" class="code-input" maxlength="1" id="c2">
+        <input type="text" class="code-input" maxlength="1" id="c3">
+        <input type="text" class="code-input" maxlength="1" id="c4">
+      </div>
+      <button style="width: 100%;" onclick="checkFinalCode()">РАЗБЛОКИРОВАТЬ СИСТЕМУ</button>
+
+      <div id="access-granted" class="access-granted">
+        <p><strong>[ДОСТУП РАЗРЕШЕН]</strong></p><br>
+        <p>Оно смогло разглядеть ваше лицо сквозь экран. Теперь оно знает, где вы находитесь.</p><br>
+        <p><strong>Адрес встречи:</strong> 14 Bleeding Heart Yard, Hatton Garden, London EC1N 8SJ (Подвал старого ателье).</p>
+        <p><strong>Заметка Мастера:</strong> «Если придете после полуночи — не смотрите ему прямо в глаза. Оно не любит, когда за ним наблюдают».</p>
+      </div>
+    </div>
+
+    <div id="step-msg"></div>
   </div>
 
-  <!-- Экран текстового скримера -->
+  <!-- Скример -->
   <div id="screamer">
     <div class="screamer-text">
       Я ТЕБЯ ВИЖУ.<br>
@@ -187,45 +490,91 @@
   </div>
 
   <script>
-    const CORRECT_CODE = "7731";
-    let attempts = 5;
+    let attempts = 2; // Ровно 2 попытки
 
-    // Фоновый звук (спокойный хоррор-эмбиенс)
+    // Аудио
     const bgAudio = new Audio('https://myinstants.com/media/sounds/scary-ambience.mp3');
     bgAudio.loop = true;
-    bgAudio.volume = 0.4; // Негромкий фон
+    bgAudio.volume = 0.4;
     let isBgPlaying = false;
 
     function startBgAudio() {
       if (!isBgPlaying) {
-        bgAudio.play().then(() => {
-          isBgPlaying = true;
-        }).catch(() => {});
+        bgAudio.play().then(() => { isBgPlaying = true; }).catch(() => {});
       }
     }
 
-    function checkCode() {
+    // Проверка пошаговых загадок
+    function checkStep(stepNum, correctValue, inputId) {
       startBgAudio();
-      const input = document.getElementById('cipher-input').value.trim();
-      const log = document.getElementById('log');
+      const val = document.getElementById(inputId).value.trim().toLowerCase();
+      const msg = document.getElementById('step-msg');
 
-      if (input === CORRECT_CODE) {
-        document.getElementById('access-granted').style.display = 'block';
-        log.innerHTML += `<br><span style="color:#00ff66">> УСПЕХ: Защита снята.</span>`;
-      } else {
-        attempts--;
-        if (attempts > 0) {
-          log.innerHTML += `<br>> ОТКАЗ В ДОСТУПЕ: Неверный ключ "${input}". Существо приблизилось. (Осталось попыток: ${attempts})`;
+      // Допускаем ввод текстом для 3 загадки (три / 3)
+      let isCorrect = (val === correctValue);
+      if (stepNum === 3 && (val === 'три' || val === '3')) isCorrect = true;
+
+      if (isCorrect) {
+        msg.textContent = '';
+        document.getElementById(`p${stepNum}`).classList.remove('active');
+        
+        if (stepNum < 4) {
+          document.getElementById(`p${stepNum + 1}`).classList.add('active');
         } else {
-          log.innerHTML += `<br><span style="color:#ff0000">> КРИТИЧЕСКАЯ ОШИБКА: ОБЪЕКТ ВЫШЕЛ ИЗ-ПОД КОНТРОЛЯ!</span>`;
-          triggerScreamer();
+          // Все загадки решены -> открываем Терминал
+          document.getElementById('terminal').style.display = 'block';
+          document.getElementById('c1').focus();
         }
+      } else {
+        handleError();
       }
-      document.getElementById('cipher-input').value = '';
     }
 
+    // Автопереход между ячейками итогового кода
+    const inputs = document.querySelectorAll('.code-input');
+    inputs.forEach((input, index) => {
+      input.addEventListener('input', (e) => {
+        if (e.target.value.length === 1 && index < inputs.length - 1) {
+          inputs[index + 1].focus();
+        }
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !e.target.value && index > 0) {
+          inputs[index - 1].focus();
+        }
+      });
+    });
+
+    // Финальная проверка кода 7731
+    function checkFinalCode() {
+      startBgAudio();
+      const code = Array.from(inputs).map(i => i.value).join('');
+      if (code === '7731') {
+        document.getElementById('access-granted').style.display = 'block';
+        document.getElementById('term-log').innerHTML = `<span style="color:#00ff66">> УСПЕХ: Защита снята. Данные расшифрованы.</span>`;
+      } else {
+        handleError();
+      }
+    }
+
+    // Обработка ошибки и снятие жизней
+    function handleError() {
+      attempts--;
+      const attemptsDisplay = document.getElementById('attempts-display');
+      const msg = document.getElementById('step-msg');
+
+      if (attempts > 0) {
+        attemptsDisplay.textContent = `Осталось попыток: ${attempts}`;
+        msg.textContent = 'ОШИБКА: Неверный ключ! Механизм издаёт зловещий треск...';
+        msg.className = 'error-text';
+      } else {
+        attemptsDisplay.textContent = 'Осталось попыток: 0';
+        triggerScreamer();
+      }
+    }
+
+    // Скример при 0 попыток
     function triggerScreamer() {
-      // Останавливаем фоновый эмбиенс при срабатывании скримера
       bgAudio.pause();
 
       const audio = new Audio('https://myinstants.com/media/sounds/screamer.mp3');
@@ -235,9 +584,8 @@
       document.getElementById('screamer').style.display = 'flex';
 
       setTimeout(() => {
-        window.close();
         document.body.innerHTML = '<h1 style="color:red; background:black; height:100vh; display:flex; align-items:center; justify-content:center; margin:0; font-family:\'Courier New\', Courier, monospace;">FATAL ERROR 0x0000005: CRASH</h1>';
-      }, 1500);
+      }, 1800);
     }
   </script>
 </body>
