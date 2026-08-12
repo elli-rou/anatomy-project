@@ -1,310 +1,236 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIVE STREAM // ROOM_004</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            background-color: #050505;
-            color: #d1d1d1;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terminal Access</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #050505;
+      color: #00ff66;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-        /* Эффект старого монитора (CRT/Glitch) */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 6px 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
+    /* Контейнер для куклы */
+    .doll-container {
+      width: 100%;
+      max-width: 450px;
+      height: 280px;
+      background: #000;
+      border: 1px solid #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      margin-bottom: 15px;
+      position: relative;
+    }
 
-        .container {
-            width: 90%;
-            max-width: 650px;
-            border: 1px solid #333;
-            padding: 20px;
-            background: #0a0a0a;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.2);
-        }
+    /* Анимация медленно передвигающейся / дышащей куклы */
+    .creepy-doll {
+      width: 180px;
+      height: 240px;
+      animation: dollMove 6s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 10px rgba(0,0,0,0.9));
+    }
 
-        .stream-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #888;
-            border-bottom: 1px solid #222;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-        }
+    @keyframes dollMove {
+      0% { transform: translateY(0) rotate(-1deg) scale(0.98); }
+      50% { transform: translateY(-8px) rotate(2deg) scale(1.02); }
+      100% { transform: translateY(5px) rotate(-2deg) scale(1); }
+    }
 
-        .rec-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: #e60000;
-            border-radius: 50%;
-            margin-right: 5px;
-            animation: blink 1s infinite;
-        }
+    /* Терминал */
+    .terminal-box {
+      width: 100%;
+      max-width: 600px;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      padding: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.8);
+    }
 
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
+    .log {
+      color: #ff3333;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin-bottom: 10px;
+      min-height: 80px;
+    }
 
-        /* Видеотрансляция */
-        .viewport {
-            width: 100%;
-            height: 380px;
-            background-color: #000;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            border: 1px solid #400;
-        }
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
 
-        .creature-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: contrast(110%) brightness(90%);
-            animation: glitch-anim 3s infinite alternate;
-        }
+    input[type="text"] {
+      flex: 1;
+      background: #000;
+      border: 1px solid #444;
+      color: #fff;
+      padding: 8px 12px;
+      font-family: inherit;
+    }
 
-        @keyframes glitch-anim {
-            0% { transform: scale(1) translate(0, 0); filter: contrast(110%); }
-            95% { transform: scale(1) translate(0, 0); filter: contrast(110%); }
-            96% { transform: scale(1.02) translate(-2px, 1px); filter: hue-rotate(90deg) contrast(150%); }
-            97% { transform: scale(0.99) translate(2px, -1px); filter: contrast(200%); }
-            98% { transform: scale(1.01) translate(-1px, -1px); filter: hue-rotate(-90deg); }
-            100% { transform: scale(1) translate(0, 0); filter: contrast(110%); }
-        }
+    button {
+      background: #222;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-family: inherit;
+    }
 
-        /* Помехи на видео */
-        .static-noise {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.25) 100%);
-            opacity: 0.6;
-            pointer-events: none;
-            animation: noise 0.2s infinite;
-        }
+    button:hover { background: #333; }
 
-        @keyframes noise {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(-1px, 1px); }
-            100% { transform: translate(1px, -1px); }
-        }
+    /* Блок доступа */
+    .access-granted {
+      display: none;
+      border: 1px solid #ff2222;
+      background: rgba(20, 0, 0, 0.6);
+      color: #ff4444;
+      padding: 15px;
+      margin-top: 10px;
+    }
 
-        .text-log {
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: #aaa;
-            line-height: 1.4;
-            height: 100px;
-            overflow-y: auto;
-            border-left: 2px solid #800;
-            padding-left: 10px;
-        }
+    /* СКРИМЕР */
+    #screamer {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #000;
+      z-index: 99999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
 
-        .input-section {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-        }
+    #screamer svg {
+      width: 80%;
+      max-width: 500px;
+      animation: screamShake 0.05s infinite alternate;
+      filter: drop-shadow(0 0 30px #ff0000);
+    }
 
-        input[type="text"] {
-            flex: 1;
-            background: #111;
-            border: 1px solid #444;
-            color: #ff3333;
-            padding: 10px;
-            font-family: inherit;
-            outline: none;
-        }
-
-        button {
-            background: #200;
-            border: 1px solid #600;
-            color: #fff;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.2s;
-        }
-
-        button:hover {
-            background: #400;
-            color: #ffaaaa;
-        }
-
-        .secret-message {
-            display: none;
-            margin-top: 15px;
-            padding: 15px;
-            background: #1a0000;
-            border: 1px solid #b00;
-            color: #ff4d4d;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .audio-btn {
-            margin-top: 10px;
-            width: 100%;
-            background: #111;
-            border: 1px solid #444;
-            color: #888;
-            font-size: 0.75rem;
-            padding: 5px;
-        }
-    </style>
+    @keyframes screamShake {
+      0% { transform: scale(1.1) translate(-10px, 5px) rotate(-3deg); }
+      100% { transform: scale(1.2) translate(10px, -5px) rotate(3deg); }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="overlay"></div>
+  <!-- Блок с куклой -->
+  <div class="doll-container">
+    <!-- Тканевая кукла (SVG) -->
+    <svg class="creepy-doll" viewBox="0 0 100 140">
+      <!-- Тело из мешковины -->
+      <path d="M 30,60 L 15,110 L 35,110 L 40,85 L 50,85 L 55,110 L 75,110 L 60,60 Z" fill="#4a4035" stroke="#1f1a14" stroke-width="2"/>
+      <!-- Руки -->
+      <path d="M 30,62 L 10,90 L 18,93 L 33,70 Z" fill="#3b3228"/>
+      <path d="M 60,62 L 80,90 L 72,93 L 57,70 Z" fill="#3b3228"/>
+      <!-- Голова -->
+      <circle cx="45" cy="38" r="22" fill="#5a4f42" stroke="#1f1a14" stroke-width="2"/>
+      <!-- Стежки/Швы -->
+      <line x1="45" y1="16" x2="45" y2="60" stroke="#111" stroke-width="1.5" stroke-dasharray="2,2"/>
+      <line x1="25" y1="38" x2="65" y2="38" stroke="#111" stroke-width="1.5" stroke-dasharray="2,2"/>
+      <!-- Глаза-пуговицы -->
+      <circle cx="36" cy="34" r="4.5" fill="#111"/>
+      <line x1="33" y1="31" x2="39" y2="37" stroke="#8b0000" stroke-width="1.5"/>
+      <line x1="39" y1="31" x2="33" y2="37" stroke="#8b0000" stroke-width="1.5"/>
+      
+      <circle cx="54" cy="34" r="5.5" fill="#0a0a0a"/>
+      <line x1="50" y1="30" x2="58" y2="38" stroke="#8b0000" stroke-width="1.5"/>
+      <line x1="58" y1="30" x2="50" y2="38" stroke="#8b0000" stroke-width="1.5"/>
+      <!-- Зашитый рот -->
+      <path d="M 35,50 Q 45,55 55,50" stroke="#111" stroke-width="2" fill="none"/>
+      <line x1="38" y1="48" x2="38" y2="54" stroke="#8b0000" stroke-width="1.5"/>
+      <line x1="45" y1="49" x2="45" y2="55" stroke="#8b0000" stroke-width="1.5"/>
+      <line x1="52" y1="48" x2="52" y2="54" stroke="#8b0000" stroke-width="1.5"/>
+    </svg>
+  </div>
 
-    <div class="container">
-        <div class="stream-header">
-            <div><span class="rec-dot"></span>LIVE: CAM_03 [SUBJECT_NODE]</div>
-            <div id="clock">00:00:00</div>
-        </div>
-
-        <div class="viewport">
-            <div class="static-noise"></div>
-            <img src="https://i.ibb.co/6P0D0rB/creature.jpg" class="creature-img" alt="Subject">
-        </div>
-
-        <button class="audio-btn" id="soundToggle" onclick="toggleAudio()">🔊 Включить / Выключить жуткий эмбиент</button>
-
-        <div class="text-log" id="log">
-            > Подключение к узлу прошло успешно...<br>
-            > [ВНИМАНИЕ]: Существо зафиксировало видеопоток.<br>
-            > Введите последовательность шифра для доступа к файлам...
-        </div>
-
-        <div class="input-section">
-            <input type="text" id="passcodeInput" placeholder="ВВЕДИТЕ ШИФР..." autocomplete="off">
-            <button onclick="checkPasscode()">ВВОД</button>
-        </div>
-
-        <div class="secret-message" id="secretBox">
-            <strong>[ДОСТУП РАЗРЕШЕН]</strong><br><br>
-            Оно смогло разглядеть ваше лицо сквозь экран. Теперь оно знает, где вы находитесь.<br><br>
-            <strong>Адрес встречи:</strong> Улица Промышленная, 14 (Подвал старого ателье).<br>
-            <strong>Заметка Мастера:</strong> «Если придете после полуночи — не смотрите ему прямо в глаза. Оно не любит, когда за ним наблюдают».
-        </div>
+  <!-- Терминал -->
+  <div class="terminal-box">
+    <div id="log" class="log">
+      > Подключение к узлу прошло успешно...<br>
+      > Обнаружен 1 активный объект.<br>
+      > Введите последовательность шифра...
     </div>
 
-    <script>
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
+    <div class="input-row">
+      <input type="text" id="cipher-input" placeholder="ВВЕДИТЕ ШИФР..." />
+      <button onclick="checkCode()">ВВОД</button>
+    </div>
+
+    <!-- Успешный ввод -->
+    <div id="access-granted" class="access-granted">
+      <p><strong>[ДОСТУП РАЗРЕШЕН]</strong></p><br>
+      <p>Оно смогло разглядеть ваше лицо сквозь экран. Теперь оно знает, где вы находитесь.</p><br>
+      <p><strong>Адрес встречи:</strong> 14 Bleeding Heart Yard, Hatton Garden, London EC1N 8SJ (Подвал старого ателье).</p>
+      <p><strong>Заметка Мастера:</strong> «Если придете после полуночи — не смотрите ему прямо в глаза. Оно не любит, когда за ним наблюдают».</p>
+    </div>
+  </div>
+
+  <!-- Экран скримера -->
+  <div id="screamer">
+    <!-- Страшная тканевая кукла -->
+    <svg viewBox="0 0 100 140">
+      <circle cx="45" cy="38" r="25" fill="#2b0000" stroke="#ff0000" stroke-width="2"/>
+      <circle cx="34" cy="34" r="6" fill="#ff0000"/>
+      <circle cx="56" cy="34" r="7" fill="#ff0000"/>
+      <path d="M 28,52 Q 45,70 62,52" stroke="#ff0000" stroke-width="3" fill="#000"/>
+      <path d="M 20,65 L 70,65 L 80,130 L 10,130 Z" fill="#1a0000" stroke="#ff0000" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <script>
+    const CORRECT_CODE = "7731"; // Укажите ваш правильный шифр
+    let attempts = 5;
+
+    function checkCode() {
+      const input = document.getElementById('cipher-input').value.trim();
+      const log = document.getElementById('log');
+
+      if (input === CORRECT_CODE) {
+        document.getElementById('access-granted').style.display = 'block';
+        log.innerHTML += `<br><span style="color:#00ff66">> УСПЕХ: Защита снята.</span>`;
+      } else {
+        attempts--;
+        if (attempts > 0) {
+          log.innerHTML += `<br>> ОТКАЗ В ДОСТУПЕ: Неверный ключ "${input}". Существо приблизилось. (Осталось попыток: ${attempts})`;
+        } else {
+          log.innerHTML += `<br><span style="color:#ff0000">> КРИТИЧЕСКАЯ ОШИБКА: ОБЪЕКТ ВЫШЕЛ ИЗ-ПОД КОНТРОЛЯ!</span>`;
+          triggerScreamer();
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+      }
+      document.getElementById('cipher-input').value = '';
+    }
 
-        function checkPasscode() {
-            const input = document.getElementById('passcodeInput').value.trim().toUpperCase();
-            const log = document.getElementById('log');
-            const secretBox = document.getElementById('secretBox');
+    function triggerScreamer() {
+      // Запуск резкого звука скримера
+      const audio = new Audio('https://myinstants.com/media/sounds/screamer.mp3');
+      audio.volume = 1.0;
+      audio.play().catch(() => {});
 
-            if (input === "ANATOMY" || input === "1892" || input === "КУКЛА") {
-                log.innerHTML += `<br><span style="color: #ff3333;">> ОШИБКА 000: Защита снята. Раскрытие координат...</span>`;
-                secretBox.style.display = "block";
-                log.scrollTop = log.scrollHeight;
-                playGlitchSound();
-            } else {
-                log.innerHTML += `<br><span style="color: #ff1111;">> ОТКАЗ В ДОСТУПЕ: Неверный ключ "${input}". Существо приблизилось.</span>`;
-                log.scrollTop = log.scrollHeight;
-                playErrorTone();
-            }
-            document.getElementById('passcodeInput').value = '';
-        }
+      // Показ экрана скримера
+      document.getElementById('screamer').style.display = 'flex';
 
-        let audioCtx = null;
-        let isPlaying = false;
-        let osc1, osc2, gainNode;
-
-        function toggleAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-
-            if (!isPlaying) {
-                osc1 = audioCtx.createOscillator();
-                osc2 = audioCtx.createOscillator();
-                gainNode = audioCtx.createGain();
-
-                osc1.type = 'sawtooth';
-                osc1.frequency.setValueAtTime(55, audioCtx.currentTime);
-
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(58.73, audioCtx.currentTime);
-
-                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-
-                osc1.connect(gainNode);
-                osc2.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-
-                osc1.start();
-                osc2.start();
-                isPlaying = true;
-                document.getElementById('soundToggle').innerText = "🔊 Звук включен (Нажмите чтобы выключить)";
-            } else {
-                osc1.stop();
-                osc2.stop();
-                isPlaying = false;
-                document.getElementById('soundToggle').innerText = "🔇 Включить / Выключить жуткий эмбиент";
-            }
-        }
-
-        function playErrorTone() {
-            if (!audioCtx) return;
-            const errOsc = audioCtx.createOscillator();
-            const errGain = audioCtx.createGain();
-            errOsc.type = 'square';
-            errOsc.frequency.setValueAtTime(100, audioCtx.currentTime);
-            errGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            errOsc.connect(errGain);
-            errGain.connect(audioCtx.destination);
-            errOsc.start();
-            errOsc.stop(audioCtx.currentTime + 0.3);
-        }
-
-        function playGlitchSound() {
-            if (!audioCtx) return;
-            const gOsc = audioCtx.createOscillator();
-            const gGain = audioCtx.createGain();
-            gOsc.type = 'sawtooth';
-            gOsc.frequency.setValueAtTime(440, audioCtx.currentTime);
-            gOsc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.8);
-            gGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gOsc.connect(gGain);
-            gGain.connect(audioCtx.destination);
-            gOsc.start();
-            gOsc.stop(audioCtx.currentTime + 0.8);
-        }
-    </script>
+      // «Вылет» сайта через 1.5 секунды
+      setTimeout(() => {
+        window.close(); // Попытка закрыть вкладку
+        // Если браузер заблокировал закрытие — превращаем страницу в сбой
+        document.body.innerHTML = '<h1 style="color:red; background:black; height:100vh; display:flex; align-items:center; justify-content:center; margin:0;">FATAL ERROR 0x0000005: CRASH</h1>';
+      }, 1500);
+    }
+  </script>
 </body>
 </html>
