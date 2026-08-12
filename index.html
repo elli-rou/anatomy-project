@@ -32,7 +32,7 @@
       position: relative;
     }
 
-    /* Анимация медленно передвигающейся / дышащей куклы */
+    /* Анимация медленно движущейся куклы */
     .creepy-doll {
       width: 180px;
       height: 240px;
@@ -110,47 +110,38 @@
       z-index: 99999;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
     }
 
-    #screamer svg {
-      width: 80%;
-      max-width: 500px;
-      animation: screamShake 0.05s infinite alternate;
-      filter: drop-shadow(0 0 30px #ff0000);
+    #screamer img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      animation: screamShake 0.04s infinite alternate;
     }
 
     @keyframes screamShake {
-      0% { transform: scale(1.1) translate(-10px, 5px) rotate(-3deg); }
-      100% { transform: scale(1.2) translate(10px, -5px) rotate(3deg); }
+      0% { transform: scale(1.05) translate(-10px, 5px); }
+      100% { transform: scale(1.15) translate(10px, -5px); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Блок с куклой -->
+  <!-- Блок с обычной куклой -->
   <div class="doll-container">
-    <!-- Тканевая кукла (SVG) -->
     <svg class="creepy-doll" viewBox="0 0 100 140">
-      <!-- Тело из мешковины -->
       <path d="M 30,60 L 15,110 L 35,110 L 40,85 L 50,85 L 55,110 L 75,110 L 60,60 Z" fill="#4a4035" stroke="#1f1a14" stroke-width="2"/>
-      <!-- Руки -->
       <path d="M 30,62 L 10,90 L 18,93 L 33,70 Z" fill="#3b3228"/>
       <path d="M 60,62 L 80,90 L 72,93 L 57,70 Z" fill="#3b3228"/>
-      <!-- Голова -->
       <circle cx="45" cy="38" r="22" fill="#5a4f42" stroke="#1f1a14" stroke-width="2"/>
-      <!-- Стежки/Швы -->
       <line x1="45" y1="16" x2="45" y2="60" stroke="#111" stroke-width="1.5" stroke-dasharray="2,2"/>
       <line x1="25" y1="38" x2="65" y2="38" stroke="#111" stroke-width="1.5" stroke-dasharray="2,2"/>
-      <!-- Глаза-пуговицы -->
       <circle cx="36" cy="34" r="4.5" fill="#111"/>
       <line x1="33" y1="31" x2="39" y2="37" stroke="#8b0000" stroke-width="1.5"/>
       <line x1="39" y1="31" x2="33" y2="37" stroke="#8b0000" stroke-width="1.5"/>
-      
       <circle cx="54" cy="34" r="5.5" fill="#0a0a0a"/>
       <line x1="50" y1="30" x2="58" y2="38" stroke="#8b0000" stroke-width="1.5"/>
       <line x1="58" y1="30" x2="50" y2="38" stroke="#8b0000" stroke-width="1.5"/>
-      <!-- Зашитый рот -->
       <path d="M 35,50 Q 45,55 55,50" stroke="#111" stroke-width="2" fill="none"/>
       <line x1="38" y1="48" x2="38" y2="54" stroke="#8b0000" stroke-width="1.5"/>
       <line x1="45" y1="49" x2="45" y2="55" stroke="#8b0000" stroke-width="1.5"/>
@@ -180,20 +171,34 @@
     </div>
   </div>
 
-  <!-- Экран скримера -->
+  <!-- Экран скримера (картинка вшита прямо в код через SVG) -->
   <div id="screamer">
-    <!-- Страшная тканевая кукла -->
-    <svg viewBox="0 0 100 140">
-      <circle cx="45" cy="38" r="25" fill="#2b0000" stroke="#ff0000" stroke-width="2"/>
-      <circle cx="34" cy="34" r="6" fill="#ff0000"/>
-      <circle cx="56" cy="34" r="7" fill="#ff0000"/>
-      <path d="M 28,52 Q 45,70 62,52" stroke="#ff0000" stroke-width="3" fill="#000"/>
-      <path d="M 20,65 L 70,65 L 80,130 L 10,130 Z" fill="#1a0000" stroke="#ff0000" stroke-width="2"/>
+    <svg viewBox="0 0 500 650" style="width:100%; height:100%;">
+      <rect width="100%" height="100%" fill="#cc0000"/>
+      <!-- Силуэт сущности -->
+      <path d="M 150 650 C 150 450, 180 350, 180 250 C 120 220, 80 180, 80 120 C 80 50, 150 10, 250 10 C 350 10, 420 50, 420 120 C 420 180, 380 220, 320 250 C 320 350, 350 450, 350 650 Z" fill="#080303"/>
+      <!-- Уши -->
+      <path d="M 120 120 Q 40 220 110 260 Z" fill="#080303"/>
+      <path d="M 380 120 Q 460 220 390 260 Z" fill="#080303"/>
+      <!-- Красные глаза -->
+      <circle cx="200" cy="140" r="28" fill="#880000" stroke="#ff3333" stroke-width="4"/>
+      <circle cx="200" cy="140" r="12" fill="#000000"/>
+      <circle cx="195" cy="135" r="4" fill="#ffffff"/>
+      
+      <circle cx="300" cy="140" r="28" fill="#880000" stroke="#ff3333" stroke-width="4"/>
+      <circle cx="300" cy="140" r="12" fill="#000000"/>
+      <circle cx="295" cy="135" r="4" fill="#ffffff"/>
+      <!-- Нос -->
+      <polygon points="250,180 242,200 258,200" fill="#000000"/>
+      <!-- Оскал / Улыбка -->
+      <path d="M 190 230 Q 250 280 310 230 Q 250 250 190 230 Z" fill="#000000" stroke="#ff2222" stroke-width="2"/>
+      <!-- Зубы -->
+      <path d="M 200 235 L 205 245 L 210 237 L 218 248 L 225 239 L 235 250 L 245 240 L 255 250 L 265 240 L 275 248 L 285 238 L 295 245 L 300 234" stroke="#ffffff" stroke-width="2" fill="none"/>
     </svg>
   </div>
 
   <script>
-    const CORRECT_CODE = "7731"; // Укажите ваш правильный шифр
+    const CORRECT_CODE = "7731";
     let attempts = 5;
 
     function checkCode() {
@@ -216,19 +221,15 @@
     }
 
     function triggerScreamer() {
-      // Запуск резкого звука скримера
       const audio = new Audio('https://myinstants.com/media/sounds/screamer.mp3');
       audio.volume = 1.0;
       audio.play().catch(() => {});
 
-      // Показ экрана скримера
       document.getElementById('screamer').style.display = 'flex';
 
-      // «Вылет» сайта через 1.5 секунды
       setTimeout(() => {
-        window.close(); // Попытка закрыть вкладку
-        // Если браузер заблокировал закрытие — превращаем страницу в сбой
-        document.body.innerHTML = '<h1 style="color:red; background:black; height:100vh; display:flex; align-items:center; justify-content:center; margin:0;">FATAL ERROR 0x0000005: CRASH</h1>';
+        window.close();
+        document.body.innerHTML = '<h1 style="color:red; background:black; height:100vh; display:flex; align-items:center; justify-content:center; margin:0; font-family:monospace;">FATAL ERROR 0x0000005: CRASH</h1>';
       }, 1500);
     }
   </script>
