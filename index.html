@@ -38,7 +38,7 @@
             border: 1px solid #333;
             padding: 20px;
             background: #0a0a0a;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.2);
         }
 
         .stream-header {
@@ -65,67 +65,42 @@
             50% { opacity: 0; }
         }
 
-        /* Видеотрансляция (CSS-арт безликой куклы) */
+        /* Видеотрансляция */
         .viewport {
             width: 100%;
-            height: 320px;
+            height: 380px;
             background-color: #000;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            border: 1px solid #222;
+            border: 1px solid #400;
         }
 
-        /* Безликая кукла на стене */
-        .doll-body {
-            width: 60px;
-            height: 140px;
-            background: #111;
-            border: 2px solid #2a2a2a;
-            border-radius: 10px;
-            position: relative;
+        .creature-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: contrast(110%) brightness(90%);
+            animation: glitch-anim 3s infinite alternate;
         }
 
-        .doll-head {
-            width: 70px;
-            height: 85px;
-            background: #d8c8b8; /* Бледный фарфор */
-            border-radius: 50% 50% 45% 45%;
-            position: absolute;
-            top: -75px;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
-            /* Абсолютно безликая, без глаз и рта */
-        }
-
-        .doll-joints {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border: 1px solid #000;
-            border-radius: 50%;
-            background: #1a1a1a;
-        }
-
-        .joint-shoulder-left { top: 5px; left: -10px; }
-        .joint-shoulder-right { top: 5px; right: -10px; }
-
-        .string {
-            position: absolute;
-            width: 1px;
-            background: rgba(255, 255, 255, 0.15);
-            top: -100px;
+        @keyframes glitch-anim {
+            0% { transform: scale(1) translate(0, 0); filter: contrast(110%); }
+            95% { transform: scale(1) translate(0, 0); filter: contrast(110%); }
+            96% { transform: scale(1.02) translate(-2px, 1px); filter: hue-rotate(90deg) contrast(150%); }
+            97% { transform: scale(0.99) translate(2px, -1px); filter: contrast(200%); }
+            98% { transform: scale(1.01) translate(-1px, -1px); filter: hue-rotate(-90deg); }
+            100% { transform: scale(1) translate(0, 0); filter: contrast(110%); }
         }
 
         /* Помехи на видео */
         .static-noise {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.2) 100%);
-            opacity: 0.7;
+            background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.25) 100%);
+            opacity: 0.6;
             pointer-events: none;
             animation: noise 0.2s infinite;
         }
@@ -143,7 +118,7 @@
             line-height: 1.4;
             height: 100px;
             overflow-y: auto;
-            border-left: 2px solid #444;
+            border-left: 2px solid #800;
             padding-left: 10px;
         }
 
@@ -156,16 +131,16 @@
         input[type="text"] {
             flex: 1;
             background: #111;
-            border: 1px solid #333;
-            color: #00ff66;
+            border: 1px solid #444;
+            color: #ff3333;
             padding: 10px;
             font-family: inherit;
             outline: none;
         }
 
         button {
-            background: #222;
-            border: 1px solid #444;
+            background: #200;
+            border: 1px solid #600;
             color: #fff;
             padding: 10px 15px;
             cursor: pointer;
@@ -174,18 +149,29 @@
         }
 
         button:hover {
-            background: #333;
-            color: #00ff66;
+            background: #400;
+            color: #ffaaaa;
         }
 
         .secret-message {
             display: none;
             margin-top: 15px;
             padding: 15px;
-            background: #120303;
-            border: 1px solid #800;
+            background: #1a0000;
+            border: 1px solid #b00;
             color: #ff4d4d;
             font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .audio-btn {
+            margin-top: 10px;
+            width: 100%;
+            background: #111;
+            border: 1px solid #444;
+            color: #888;
+            font-size: 0.75rem;
+            padding: 5px;
         }
     </style>
 </head>
@@ -195,30 +181,21 @@
 
     <div class="container">
         <div class="stream-header">
-            <div><span class="rec-dot"></span>LIVE: CAM_03 [WORKSHOP_NODE]</div>
+            <div><span class="rec-dot"></span>LIVE: CAM_03 [SUBJECT_NODE]</div>
             <div id="clock">00:00:00</div>
         </div>
 
-        <!-- Визуальная часть трансляции -->
         <div class="viewport">
             <div class="static-noise"></div>
-            
-            <!-- Инсталляция безликой куклы -->
-            <div class="doll-body" id="doll">
-                <div class="doll-head"></div>
-                <div class="doll-joints joint-shoulder-left"></div>
-                <div class="doll-joints joint-shoulder-right"></div>
-                
-                <div class="string" style="height: 120px; left: 5px;"></div>
-                <div class="string" style="height: 120px; right: 5px;"></div>
-                <div class="string" style="height: 180px; left: 50%;"></div>
-            </div>
+            <img src="https://i.ibb.co/6P0D0rB/creature.jpg" class="creature-img" alt="Subject">
         </div>
+
+        <button class="audio-btn" id="soundToggle" onclick="toggleAudio()">🔊 Включить / Выключить жуткий эмбиент</button>
 
         <div class="text-log" id="log">
             > Подключение к узлу прошло успешно...<br>
-            > Обнаружен 1 активный объект на подвесе.<br>
-            > Введите последовательность шифра для доступа к файлам мастера...
+            > [ВНИМАНИЕ]: Существо зафиксировало видеопоток.<br>
+            > Введите последовательность шифра для доступа к файлам...
         </div>
 
         <div class="input-section">
@@ -228,14 +205,13 @@
 
         <div class="secret-message" id="secretBox">
             <strong>[ДОСТУП РАЗРЕШЕН]</strong><br><br>
-            Форма готова. Глаза ещё не вырезаны, но она уже слышит ваше дыхание.<br><br>
-            <strong>Адрес забора:</strong> Улица Промышленная, 14 (Подвал старого ателье).<br>
-            <strong>Заметка Мастера:</strong> «Если придете после полуночи — принесите свои нити. Мои закончились».
+            Оно смогло разглядеть ваше лицо сквозь экран. Теперь оно знает, где вы находитесь.<br><br>
+            <strong>Адрес встречи:</strong> Улица Промышленная, 14 (Подвал старого ателье).<br>
+            <strong>Заметка Мастера:</strong> «Если придете после полуночи — не смотрите ему прямо в глаза. Оно не любит, когда за ним наблюдают».
         </div>
     </div>
 
     <script>
-        // Обновление часов
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
@@ -243,29 +219,91 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Небольшая анимация "подергивания" куклы
-        setInterval(() => {
-            const doll = document.getElementById('doll');
-            const randomX = (Math.random() - 0.5) * 4;
-            const randomRotate = (Math.random() - 0.5) * 3;
-            doll.style.transform = `translate(${randomX}px, 0) rotate(${randomRotate}deg)`;
-        }, 1500);
-
-        // Проверка пароля (По умолчанию пароль: ANATOMY или 1892)
         function checkPasscode() {
             const input = document.getElementById('passcodeInput').value.trim().toUpperCase();
             const log = document.getElementById('log');
             const secretBox = document.getElementById('secretBox');
 
             if (input === "ANATOMY" || input === "1892" || input === "КУКЛА") {
-                log.innerHTML += `<br><span style="color: #00ff66;">> ОШИБКА 000: Защита снята. Раскрытие координат...</span>`;
+                log.innerHTML += `<br><span style="color: #ff3333;">> ОШИБКА 000: Защита снята. Раскрытие координат...</span>`;
                 secretBox.style.display = "block";
                 log.scrollTop = log.scrollHeight;
+                playGlitchSound();
             } else {
-                log.innerHTML += `<br><span style="color: #ff3333;">> ОТКАЗ В ДОСТУПЕ: Неверный ключ "${input}". Объект запомнил вашу попытку.</span>`;
+                log.innerHTML += `<br><span style="color: #ff1111;">> ОТКАЗ В ДОСТУПЕ: Неверный ключ "${input}". Существо приблизилось.</span>`;
                 log.scrollTop = log.scrollHeight;
+                playErrorTone();
             }
             document.getElementById('passcodeInput').value = '';
+        }
+
+        let audioCtx = null;
+        let isPlaying = false;
+        let osc1, osc2, gainNode;
+
+        function toggleAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            if (!isPlaying) {
+                osc1 = audioCtx.createOscillator();
+                osc2 = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
+
+                osc1.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(55, audioCtx.currentTime);
+
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(58.73, audioCtx.currentTime);
+
+                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+                osc1.connect(gainNode);
+                osc2.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc1.start();
+                osc2.start();
+                isPlaying = true;
+                document.getElementById('soundToggle').innerText = "🔊 Звук включен (Нажмите чтобы выключить)";
+            } else {
+                osc1.stop();
+                osc2.stop();
+                isPlaying = false;
+                document.getElementById('soundToggle').innerText = "🔇 Включить / Выключить жуткий эмбиент";
+            }
+        }
+
+        function playErrorTone() {
+            if (!audioCtx) return;
+            const errOsc = audioCtx.createOscillator();
+            const errGain = audioCtx.createGain();
+            errOsc.type = 'square';
+            errOsc.frequency.setValueAtTime(100, audioCtx.currentTime);
+            errGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            errOsc.connect(errGain);
+            errGain.connect(audioCtx.destination);
+            errOsc.start();
+            errOsc.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function playGlitchSound() {
+            if (!audioCtx) return;
+            const gOsc = audioCtx.createOscillator();
+            const gGain = audioCtx.createGain();
+            gOsc.type = 'sawtooth';
+            gOsc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            gOsc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.8);
+            gGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gOsc.connect(gGain);
+            gGain.connect(audioCtx.destination);
+            gOsc.start();
+            gOsc.stop(audioCtx.currentTime + 0.8);
         }
     </script>
 </body>
