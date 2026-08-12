@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIVE STREAM // ROOM_004</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #050505;
+            color: #d1d1d1;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Эффект старого монитора (CRT/Glitch) */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 650px;
+            border: 1px solid #333;
+            padding: 20px;
+            background: #0a0a0a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+        }
+
+        .stream-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #888;
+            border-bottom: 1px solid #222;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .rec-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #e60000;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Видеотрансляция (CSS-арт безликой куклы) */
+        .viewport {
+            width: 100%;
+            height: 320px;
+            background-color: #000;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 1px solid #222;
+        }
+
+        /* Безликая кукла на стене */
+        .doll-body {
+            width: 60px;
+            height: 140px;
+            background: #111;
+            border: 2px solid #2a2a2a;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .doll-head {
+            width: 70px;
+            height: 85px;
+            background: #d8c8b8; /* Бледный фарфор */
+            border-radius: 50% 50% 45% 45%;
+            position: absolute;
+            top: -75px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+            /* Абсолютно безликая, без глаз и рта */
+        }
+
+        .doll-joints {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #000;
+            border-radius: 50%;
+            background: #1a1a1a;
+        }
+
+        .joint-shoulder-left { top: 5px; left: -10px; }
+        .joint-shoulder-right { top: 5px; right: -10px; }
+
+        .string {
+            position: absolute;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.15);
+            top: -100px;
+        }
+
+        /* Помехи на видео */
+        .static-noise {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.2) 100%);
+            opacity: 0.7;
+            pointer-events: none;
+            animation: noise 0.2s infinite;
+        }
+
+        @keyframes noise {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-1px, 1px); }
+            100% { transform: translate(1px, -1px); }
+        }
+
+        .text-log {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.4;
+            height: 100px;
+            overflow-y: auto;
+            border-left: 2px solid #444;
+            padding-left: 10px;
+        }
+
+        .input-section {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: #111;
+            border: 1px solid #333;
+            color: #00ff66;
+            padding: 10px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        button {
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #333;
+            color: #00ff66;
+        }
+
+        .secret-message {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #120303;
+            border: 1px solid #800;
+            color: #ff4d4d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="stream-header">
+            <div><span class="rec-dot"></span>LIVE: CAM_03 [WORKSHOP_NODE]</div>
+            <div id="clock">00:00:00</div>
+        </div>
+
+        <!-- Визуальная часть трансляции -->
+        <div class="viewport">
+            <div class="static-noise"></div>
+            
+            <!-- Инсталляция безликой куклы -->
+            <div class="doll-body" id="doll">
+                <div class="doll-head"></div>
+                <div class="doll-joints joint-shoulder-left"></div>
+                <div class="doll-joints joint-shoulder-right"></div>
+                
+                <div class="string" style="height: 120px; left: 5px;"></div>
+                <div class="string" style="height: 120px; right: 5px;"></div>
+                <div class="string" style="height: 180px; left: 50%;"></div>
+            </div>
+        </div>
+
+        <div class="text-log" id="log">
+            > Подключение к узлу прошло успешно...<br>
+            > Обнаружен 1 активный объект на подвесе.<br>
+            > Введите последовательность шифра для доступа к файлам мастера...
+        </div>
+
+        <div class="input-section">
+            <input type="text" id="passcodeInput" placeholder="ВВЕДИТЕ ШИФР..." autocomplete="off">
+            <button onclick="checkPasscode()">ВВОД</button>
+        </div>
+
+        <div class="secret-message" id="secretBox">
+            <strong>[ДОСТУП РАЗРЕШЕН]</strong><br><br>
+            Форма готова. Глаза ещё не вырезаны, но она уже слышит ваше дыхание.<br><br>
+            <strong>Адрес забора:</strong> Улица Промышленная, 14 (Подвал старого ателье).<br>
+            <strong>Заметка Мастера:</strong> «Если придете после полуночи — принесите свои нити. Мои закончились».
+        </div>
+    </div>
+
+    <script>
+        // Обновление часов
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Небольшая анимация "подергивания" куклы
+        setInterval(() => {
+            const doll = document.getElementById('doll');
+            const randomX = (Math.random() - 0.5) * 4;
+            const randomRotate = (Math.random() - 0.5) * 3;
+            doll.style.transform = `translate(${randomX}px, 0) rotate(${randomRotate}deg)`;
+        }, 1500);
+
+        // Проверка пароля (По умолчанию пароль: ANATOMY или 1892)
+        function checkPasscode() {
+            const input = document.getElementById('passcodeInput').value.trim().toUpperCase();
+            const log = document.getElementById('log');
+            const secretBox = document.getElementById('secretBox');
+
+            if (input === "ANATOMY" || input === "1892" || input === "КУКЛА") {
+                log.innerHTML += `<br><span style="color: #00ff66;">> ОШИБКА 000: Защита снята. Раскрытие координат...</span>`;
+                secretBox.style.display = "block";
+                log.scrollTop = log.scrollHeight;
+            } else {
+                log.innerHTML += `<br><span style="color: #ff3333;">> ОТКАЗ В ДОСТУПЕ: Неверный ключ "${input}". Объект запомнил вашу попытку.</span>`;
+                log.scrollTop = log.scrollHeight;
+            }
+            document.getElementById('passcodeInput').value = '';
+        }
+    </script>
+</body>
+</html>
